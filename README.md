@@ -1,2 +1,2 @@
-# snakeJavascript
-School project
+# Snake Javascript
+School Project
