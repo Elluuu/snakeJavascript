@@ -1,0 +1,2 @@
+# snakeJavascript
+School project
