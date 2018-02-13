@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>myWebsite</title>
+</head>
+<body bgcolor="#222" text="#FFFFFF">
+<center>
+<canvas id="snek" width="1340" height="640" style="border: 1px solid #FFF;">
+
+</canvas>
+</center>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+	var c = document.getElementById("snek");
+	var ctx = c.getContext("2d");
+	var x = 640;
+	var y = 600;
+	var foodPosX;
+	var foodPosY;
+	var dir;
+	var snakePath = [];
+	var prev = {};
+	var snakeLength = 3;
+	var snake = 0;
+	var score = 0;
+	var notLost = true;
+	foodPosX = Math.floor(Math.random() * 1300);
+	foodPosY = Math.floor(Math.random() * 600);
+	
+	ctx.fillStyle="#CD0000";
+	ctx.fillRect(foodPosX, foodPosY, 15, 15);
+
+	function snakeCrashed() {
+		for(var i = 0; i < snakePath.length; i++) {
+			if(snakePath[i]) {
+				if(snakePath[i].x == x && snakePath[i].y == y) {
+					return true;
+				}
+			}
+		}
+	}
+
+	function updateSnakePath() {
+		snakePath[snake++] = {x: x, y: y};
+
+		if(snake >= snakeLength) {
+			snake = 0;
+		}
+	}
+
+	function snakeDir() {
+			ctx.clearRect(0, 0, c.width, c.height);
+			ctx.font = "40px Arial";
+			ctx.fillStyle = "#fff";
+			ctx.fillText("Score: " + score, 0, 32);
+			ctx.fillStyle="#CD0000";
+			ctx.fillRect(foodPosX, foodPosY, 15, 15);
+			if(notLost) {
+				updateSnakePath();
+			} else {
+				ctx.font = "200px Arial";
+				ctx.fillStyle = "#FFF000";
+				ctx.fillText("Game Over", c.width / 9, c.height / 2);
+			}
+			//prev = {x: x, y: y}
+			if(notLost) {
+				if(dir == 0) { //w
+					y = y + -10;
+					ctx.fillStyle="#FFF";
+					ctx.fillRect(x, y, 15, 15);
+					ctx.fillStyle="#222";
+					ctx.fillRect(x, y + 15, 15, 15);
+				} else if(dir == 1) {//a
+					x = x + -10;
+					ctx.fillStyle="#FFF";
+					ctx.fillRect(x, y, 15, 15);
+					ctx.fillStyle="#222";
+					ctx.fillRect(x + 15, y, 15, 15);
+				} else if(dir == 2) {//s
+					y = y + 10;
+					ctx.fillStyle="#FFF";
+					ctx.fillRect(x, y, 15, 15);
+					ctx.fillStyle="#222";
+					ctx.fillRect(x, y - 15, 15, 15);
+				} else {//d
+					x = x + 10;
+					ctx.fillStyle="#FFF";
+					ctx.fillRect(x, y, 15, 15);
+					ctx.fillStyle="#222";
+					ctx.fillRect(x - 15, y, 15, 15);
+				}
+			}
+		for(var i = 0; i < snakePath.length; i++) {
+			ctx.fillStyle="#FFF";
+			ctx.fillRect(snakePath[i].x, snakePath[i].y, 15, 15);
+		}
+
+		if((x + 15 >= foodPosX && x <= foodPosX + 15) && (y + 15 >= foodPosY && y <= foodPosY + 15)) {
+			//snakePath.push(prev);
+			ctx.fillRect(foodPosX, foodPosY, 15, 15);
+			foodPosX = Math.floor(Math.random()* 1330);
+			foodPosY = Math.floor(Math.random()* 640);
+			ctx.fillStyle="#CD0000";
+			ctx.fillRect(foodPosX, foodPosY, 15, 15);
+			snakeLength++;
+			score++;
+		}
+		if(x == 0 || x == 1340 || y == 0 || y == 640) {
+			snakeLength = 0;
+			notLost = false;
+		}
+		if(snakeCrashed()) {
+			notLost = false;
+		}
+	}
+
+ 	$(document).keydown(function(e) {
+		switch(e.keyCode) {
+			case 87://w
+				dir = 0;
+			break;
+
+			case 65://a
+				dir = 1;
+			break;
+
+			case 83://s
+				dir = 2;
+			break;
+
+			case 68://d
+				dir = 3;
+			break;
+		}
+
+		
+	});
+
+	var timer = setInterval(snakeDir, 50);
+</script>
+</body>
+</html>
